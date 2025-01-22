@@ -1,20 +1,22 @@
 services:
-  frontend:
-    container_name: tg-front
-    build: ./tg-frontend
-    ports:
-      - 80:80
-    platform: linux/x86_64
-    working_dir: /tg-frontend
-    volumes:
-      - ./tg-frontend:/tg-frontend:delegated
-    depends_on:
-      backend:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:80"]
-      timeout: 10s
-      retries: 5
+  # frontend:
+  #   container_name: tg-front
+  #   image: nextapp
+  #   build: ./tg-frontend
+  #   ports:
+  #     - 80:80
+  #   platform: linux/x86_64
+  #   working_dir: /tg-frontend
+  #   volumes:
+  #     - ./tg-frontend:/tg-frontend
+  #     - /tg-frontend/node_modules
+  #   depends_on:
+  #     backend:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "lsof", "-t", "-i:80"]
+  #     timeout: 10s
+  #     retries: 5
 
   backend:
     container_name: tg-back
@@ -25,6 +27,7 @@ services:
     working_dir: /tg-backend
     volumes:
       - ./tg-backend:/tg-backend
+      - /tg-backend/node_modules
     depends_on:
       tg-db:
         condition: service_healthy
