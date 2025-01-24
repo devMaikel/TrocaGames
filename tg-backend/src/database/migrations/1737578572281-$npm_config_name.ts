@@ -7,7 +7,6 @@ import {
 
 export class CreateUsersAndGamesTables implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Criando a tabela de usuários
     await queryRunner.createTable(
       new Table({
         name: 'users',
@@ -60,7 +59,6 @@ export class CreateUsersAndGamesTables implements MigrationInterface {
       }),
     );
 
-    // Criando a tabela de jogos
     await queryRunner.createTable(
       new Table({
         name: 'games',
