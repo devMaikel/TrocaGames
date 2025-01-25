@@ -6,20 +6,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class GameService {
   constructor(private prisma: PrismaService) {}
-  async create(createGameDto: CreateGameDto) {
-    const {
-      title,
-      description,
-      platform,
-      genre,
-      price,
-      forTrade,
-      coverImage,
-      ownerId,
-    } = createGameDto;
+  async create(createGameDto: CreateGameDto, userId: string) {
+    const { title, description, platform, genre, price, forTrade, coverImage } =
+      createGameDto;
 
     const owner = await this.prisma.user.findUnique({
-      where: { id: ownerId, deletedAt: null },
+      where: { id: userId, deletedAt: null },
     });
     if (!owner) {
       throw new NotFoundException('Owner not found');
@@ -31,7 +23,7 @@ export class GameService {
       genre,
       price,
       forTrade,
-      ownerId,
+      ownerId: userId,
     };
     if (description !== undefined) gameData.description = description;
     if (coverImage !== undefined) gameData.coverImage = coverImage;
@@ -44,12 +36,40 @@ export class GameService {
   }
 
   async findAll() {
-    return await this.prisma.game.findMany({ where: { deletedAt: null } });
+    return await this.prisma.game.findMany({
+      where: { deletedAt: null },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        platform: true,
+        genre: true,
+        price: true,
+        forTrade: true,
+        coverImage: true,
+        ownerId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
   async findOne(id: number) {
     const game = await this.prisma.game.findUnique({
       where: { id: id, deletedAt: null },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        platform: true,
+        genre: true,
+        price: true,
+        forTrade: true,
+        coverImage: true,
+        ownerId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     if (!game) throw new NotFoundException('Game not found');
     return game;

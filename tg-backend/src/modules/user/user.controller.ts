@@ -6,12 +6,26 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, EmailConflictResponseDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  UserWithGamesResponseDto,
+  UserWithoutGamesResponseDto,
+} from './dto/user-game.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { User } from './entities/user.entity';
 
+@ApiTags('Users')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -32,18 +46,53 @@ export class UserController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all users data without the associated games.',
+    type: [UserWithoutGamesResponseDto],
+  })
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Find user by id' })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the user data and associated games.',
+    type: UserWithGamesResponseDto,
+  })
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Patch()
+  @ApiOperation({ summary: 'Update authenticated user data' })
+  @ApiResponse({
+    status: 200,
+    description: 'User data updated successfully.',
+    type: UserWithoutGamesResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Email already in use.',
+  })
+  update(
+    @Req() req: AuthenticatedRequest,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(req.user.id, updateUserDto);
   }
 
   @Delete(':id')

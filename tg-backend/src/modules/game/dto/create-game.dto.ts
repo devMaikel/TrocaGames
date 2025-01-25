@@ -54,14 +54,6 @@ export class CreateGameDto {
   @IsString()
   @IsOptional()
   coverImage?: string;
-
-  @ApiProperty({
-    description: 'ID do dono do jogo',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-  })
-  @IsString()
-  @IsNotEmpty()
-  ownerId: string = '';
 }
 
 export class CreateGameResponseDto {

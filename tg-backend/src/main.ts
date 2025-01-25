@@ -9,8 +9,9 @@ async function bootstrap() {
     .setTitle('TrocaGames API')
     .setDescription('API para gerenciamento de jogos e usuários')
     .setVersion('1.0')
-    .addTag('games')
-    .addTag('users')
+    .addTag('Games')
+    .addTag('Users')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
