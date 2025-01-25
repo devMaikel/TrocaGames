@@ -1,7 +1,7 @@
 services:
   # frontend:
   #   container_name: tg-front
-  #   image: nextapp
+  #   # image: nextapp
   #   build: ./tg-frontend
   #   ports:
   #     - 80:80
@@ -18,31 +18,32 @@ services:
   #     timeout: 10s
   #     retries: 5
 
-  backend:
-    container_name: tg-back
-    build: ./tg-backend
-    ports:
-      - 3000:3000
-    platform: linux/x86_64
-    working_dir: /tg-backend
-    volumes:
-      - ./tg-backend:/tg-backend
-      - /tg-backend/node_modules
-    depends_on:
-      tg-db:
-        condition: service_healthy
-    environment:
-      - APP_PORT=3000
-      - JWT_SECRET=jwt_secret
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=123456
-      - DB_HOST=tg-db
-      - DB_PORT=5432
-      - DB_NAME=TrocaGames
-    healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:8080"]
-      timeout: 10s
-      retries: 5
+  # backend:
+  #   container_name: tg-back
+  #   build: ./tg-backend
+  #   ports:
+  #     - 3000:3000
+  #   platform: linux/x86_64
+  #   working_dir: /tg-backend
+  #   volumes:
+  #     - ./tg-backend:/tg-backend
+  #     - /tg-backend/node_modules
+  #   depends_on:
+  #     tg-db:
+  #       condition: service_healthy
+  #   environment:
+  #     - APP_PORT=3000
+  #     - JWT_SECRET=jwt_secret
+  #     - DB_USERNAME=postgres
+  #     - DB_PASSWORD=123456
+  #     - DB_HOST=tg-db
+  #     - DB_PORT=5432
+  #     - DB_NAME=TrocaGames
+  #     - DATABASE_URL=postgresql://postgres:123456@tg-db:5432/TrocaGames?schema=public
+  #   healthcheck:
+  #     test: ["CMD", "lsof", "-t", "-i:8080"]
+  #     timeout: 10s
+  #     retries: 5
 
   tg-db:
     image: postgres:latest
@@ -53,6 +54,9 @@ services:
       POSTGRES_DB: TrocaGames
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
+      PGDATA: /data/postgres
+    volumes:
+      - ./database/pg:/data/postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 10s
