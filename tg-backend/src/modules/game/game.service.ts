@@ -75,11 +75,69 @@ export class GameService {
     return game;
   }
 
-  update(id: number, updateGameDto: UpdateGameDto) {
-    return `This action updates a #${id} game`;
+  async update(id: number, updateGameDto: UpdateGameDto, userId: string) {
+    const game = await this.prisma.game.findUnique({
+      where: { id: id, deletedAt: null, ownerId: userId },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        platform: true,
+        genre: true,
+        price: true,
+        forTrade: true,
+        coverImage: true,
+        ownerId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    if (!game) throw new NotFoundException('Game not found');
+    const updatedGame = await this.prisma.game.update({
+      where: { id: id, deletedAt: null, ownerId: userId },
+      data: {
+        title: updateGameDto.title || game.title,
+        description: updateGameDto.description || game.description,
+        platform: updateGameDto.platform || game.platform,
+        genre: updateGameDto.genre || game.genre,
+        price: updateGameDto.price || game.price,
+        forTrade: updateGameDto.forTrade || game.forTrade,
+        coverImage: updateGameDto.coverImage || game.coverImage,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        platform: true,
+        genre: true,
+        price: true,
+        forTrade: true,
+        coverImage: true,
+        ownerId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    return updatedGame;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} game`;
+  async remove(id: number, userId: string) {
+    const game = await this.prisma.game.findUnique({
+      where: { id: id, deletedAt: null, ownerId: userId },
+      select: {
+        id: true,
+      },
+    });
+    if (!game) throw new NotFoundException('Game not found');
+    await this.prisma.game.update({
+      where: { id: id, deletedAt: null, ownerId: userId },
+      data: {
+        deletedAt: new Date(),
+      },
+      select: {
+        id: true,
+      },
+    });
+    return { message: 'The game has been deleted successfully' };
   }
 }

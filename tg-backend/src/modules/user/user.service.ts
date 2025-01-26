@@ -110,16 +110,11 @@ export class UserService {
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
-        name: updateUserDto.name !== undefined ? updateUserDto.name : user.name,
-        email:
-          updateUserDto.email !== undefined ? updateUserDto.email : user.email,
-        password:
-          updateUserDto.password !== undefined ? hashedPassword : user.password,
-        profilePicture:
-          updateUserDto.profilePicture !== undefined
-            ? updateUserDto.profilePicture
-            : user.profilePicture,
-        bio: updateUserDto.bio !== undefined ? updateUserDto.bio : user.bio,
+        name: updateUserDto.name || user.name,
+        email: updateUserDto.email || user.email,
+        password: updateUserDto.password || user.password,
+        profilePicture: updateUserDto.profilePicture || user.profilePicture,
+        bio: updateUserDto.bio || user.bio,
       },
       select: {
         id: true,
@@ -135,7 +130,7 @@ export class UserService {
 
   async remove(id: string) {
     const user = await this.prisma.user.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
     });
 
     if (!user) {
@@ -153,13 +148,15 @@ export class UserService {
         data: { deletedAt: new Date() },
       });
 
-      return { message: 'User and associated games soft deleted successfully' };
+      return {
+        message: 'User and associated games has been deleted successfully',
+      };
     });
   }
 
   async findByEmail(email: string) {
     return this.prisma.user.findUnique({
-      where: { email },
+      where: { email, deletedAt: null },
     });
   }
 }

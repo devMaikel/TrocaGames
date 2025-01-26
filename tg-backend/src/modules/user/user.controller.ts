@@ -95,17 +95,19 @@ export class UserController {
     return this.userService.update(req.user.id, updateUserDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete a user from the system' })
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete()
+  @ApiOperation({ summary: 'Delete a authenticated user from the system' })
   @ApiResponse({
     status: 200,
-    description: 'User and associated games soft deleted successfully.',
+    description: 'User and associated games has been deleted successfully.',
   })
   @ApiResponse({
     status: 404,
     description: 'User not found.',
   })
-  remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+  remove(@Req() req: AuthenticatedRequest) {
+    return this.userService.remove(req.user.id);
   }
 }

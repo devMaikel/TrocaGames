@@ -65,13 +65,34 @@ export class GameController {
     return this.gameService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto) {
-    return this.gameService.update(+id, updateGameDto);
+  @ApiOperation({ summary: 'Update a game data' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the new game data updated.',
+    type: CreateGameResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Game not found.' })
+  update(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body() updateGameDto: UpdateGameDto,
+  ) {
+    return this.gameService.update(+id, updateGameDto, req.user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.gameService.remove(+id);
+  @ApiOperation({ summary: 'Delete a game data' })
+  @ApiResponse({
+    status: 200,
+    description: 'The game has been deleted successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Game not found.' })
+  remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.gameService.remove(+id, req.user.id);
   }
 }
