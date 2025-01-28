@@ -34,7 +34,7 @@ export class GameController {
     description: 'Game created successfully.',
     type: CreateGameResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Owner not found.' })
+  @ApiResponse({ status: 400, description: 'Owner not found.' })
   create(
     @Req() req: AuthenticatedRequest,
     @Body() createGameDto: CreateGameDto,
