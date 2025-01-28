@@ -16,6 +16,6 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
     CloudinaryModule,
   ],
   controllers: [],
-  providers: [PrismaService, CloudinaryService],
+  providers: [PrismaService],
 })
 export class AppModule {}

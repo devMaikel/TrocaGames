@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { Readable } from 'stream';
 
 @Injectable()
 export class CloudinaryService {
-  constructor() {
+  constructor(private prisma: PrismaService) {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
@@ -18,8 +23,8 @@ export class CloudinaryService {
     }
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: 'uploads' }, // Pasta onde as imagens serão salvas
-        (error, result) => {
+        { folder: 'uploads/profiles' },
+        async (error, result) => {
           if (error) {
             return reject(error);
           }
@@ -28,9 +33,11 @@ export class CloudinaryService {
               new Error('Upload failed: No result from Cloudinary'),
             );
           }
-
-          // Atualizar o perfil do usuário com a URL da imagem USANDO A FUNÇÃO LÁ DO SERVICE DE USER
-          resolve(result.secure_url); // Retorna a URL da imagem
+          await this.prisma.user.update({
+            where: { id: userId },
+            data: { profilePicture: result.secure_url },
+          });
+          resolve(result.secure_url);
         },
       );
 
@@ -46,10 +53,16 @@ export class CloudinaryService {
     if (!file) {
       throw new BadRequestException('Upload file not found.');
     }
+    const gameToUpdate = await this.prisma.game.findUnique({
+      where: { id: id, ownerId: userId },
+    });
+    if (!gameToUpdate) {
+      throw new NotFoundException('Game not found.');
+    }
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: 'uploads' }, // Pasta onde as imagens serão salvas
-        (error, result) => {
+        { folder: 'uploads/games' },
+        async (error, result) => {
           if (error) {
             return reject(error);
           }
@@ -58,8 +71,11 @@ export class CloudinaryService {
               new Error('Upload failed: No result from Cloudinary'),
             );
           }
-          // Atualizar o jogo com a URL da imagem USANDO A FUNÇÃO LÁ DO SERVICE DE GAME
-          resolve(result.secure_url); // Retorna a URL da imagem
+          await this.prisma.game.update({
+            where: { id: id, ownerId: userId },
+            data: { coverImage: result.secure_url },
+          });
+          resolve(result.secure_url);
         },
       );
 
