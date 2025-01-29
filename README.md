@@ -1,4 +1,4 @@
-# Projeto de Troca de Jogos
+# Projeto de Plataforma para Troca de Jogos
 
 Este é um projeto de plataforma de troca de jogos, onde os usuários podem se cadastrar, cadastrar seus jogos, buscar jogos para comprar ou trocar. O projeto é composto por um backend em **NestJS** com autenticação JWT e um frontend em **Next.js** (em desenvolvimento).
 
