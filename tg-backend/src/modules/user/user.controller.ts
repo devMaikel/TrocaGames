@@ -45,16 +45,16 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns all users data without the associated games.',
-    type: [UserWithoutGamesResponseDto],
-  })
-  findAll() {
-    return this.userService.findAll();
-  }
+  // @Get()
+  // @ApiOperation({ summary: 'Get all users' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Returns all users data without the associated games.',
+  //   type: [UserWithoutGamesResponseDto],
+  // })
+  // findAll() {
+  //   return this.userService.findAll();
+  // }
 
   @Get(':id')
   @ApiOperation({ summary: 'Find user by id' })

@@ -35,10 +35,10 @@ export class CloudinaryController {
     description: 'Upload completed successfully.',
     type: UploadImageResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Upload file not found.' })
   @ApiResponse({
     status: 400,
-    description: 'File type is not supported. (accepts: .jpg, .jpeg, .png)',
+    description:
+      'Upload file not found. || File type is not supported. (accepts: .jpg, .jpeg, .png)',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseInterceptors(FileInterceptor('file'))
@@ -64,21 +64,17 @@ export class CloudinaryController {
   @ApiBearerAuth()
   @Post('image/game/:id')
   @ApiOperation({
-    summary: 'Upload a new cover image to a authenticated user game',
+    summary: 'Upload a new image to a authenticated user game',
   })
   @ApiResponse({
     status: 201,
     description: 'Upload completed successfully.',
     type: UploadImageResponseDto,
   })
-  @ApiResponse({ status: 400, description: 'Upload file not found.' })
   @ApiResponse({
     status: 400,
-    description: 'File type is not supported. (accepts: .jpg, .jpeg, .png)',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Game not found.',
+    description:
+      'Upload file not found || File type is not supported. (accepts: .jpg, .jpeg, .png) || Game not found || Maximum number of images reached. (accepts: 5)',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseInterceptors(FileInterceptor('file'))

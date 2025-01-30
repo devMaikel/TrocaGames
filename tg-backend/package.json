@@ -18,11 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node ./node_modules/typeorm/cli",
-    "migration:create": "npm run typeorm -- migration:create ./src/database/migrations/$npm_config_name",
-    "migration:run": "npm run typeorm migration:run -- -d ./src/database/typeOrm.migration-config.ts",
-    "migration:revert": "npm run typeorm migration:revert -- -d ./src/database/typeOrm.migration-config.ts",
-    "seed:drivers": "ts-node -r tsconfig-paths/register src/database/seeders/driver.seeder.ts"
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/class-validator": "^0.13.1",

@@ -34,9 +34,39 @@ export class GameService {
     return game;
   }
 
-  async findAll() {
-    return await this.prisma.game.findMany({
-      where: { deletedAt: null },
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+    platform?: string,
+    genre?: string,
+    title?: string,
+  ) {
+    const skip = (page - 1) * limit;
+    const where: any = { deletedAt: null };
+
+    if (platform) {
+      where.platform = {
+        equals: platform,
+        mode: 'insensitive',
+      };
+    }
+    if (genre) {
+      where.genre = {
+        equals: genre,
+        mode: 'insensitive',
+      };
+    }
+    if (title) {
+      where.title = {
+        contains: title,
+        mode: 'insensitive',
+      };
+    }
+
+    const games = await this.prisma.game.findMany({
+      skip,
+      take: limit,
+      where,
       select: {
         id: true,
         title: true,
@@ -51,6 +81,18 @@ export class GameService {
         updatedAt: true,
       },
     });
+
+    const total = await this.prisma.game.count({ where });
+
+    return {
+      data: games,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

@@ -89,8 +89,8 @@ export class CreateGameResponseDto {
   forTrade: boolean = false;
 
   @ApiProperty({
-    example: 'https://example.com/mario.jpg',
-    description: 'URL da imagem de capa',
+    example: ['https://example.com/mario.jpg', 'https://example.com/zelda.jpg'],
+    description: 'URL das imagens registradas do jogo',
     nullable: true,
   })
   images: string[] | null = [];
@@ -113,4 +113,29 @@ export class CreateGameResponseDto {
     description: 'ID do dono do jogo',
   })
   ownerId: string = '';
+}
+
+export class MetaDto {
+  @ApiProperty({ example: 50, description: 'Total de itens disponíveis' })
+  total: number = 0;
+
+  @ApiProperty({ example: 1, description: 'Página atual' })
+  page: number = 0;
+
+  @ApiProperty({ example: 10, description: 'Limite de itens por página' })
+  limit: number = 0;
+
+  @ApiProperty({ example: 5, description: 'Total de páginas disponíveis' })
+  totalPages: number = 0;
+}
+
+export class PaginatedGameResponseDto {
+  @ApiProperty({
+    type: [CreateGameResponseDto],
+    description: 'Lista de jogos',
+  })
+  data: CreateGameResponseDto[] = [];
+
+  @ApiProperty({ type: MetaDto, description: 'Metadados da paginação' })
+  meta: MetaDto = { total: 0, page: 0, limit: 0, totalPages: 0 };
 }

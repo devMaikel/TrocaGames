@@ -8,13 +8,19 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { GameService } from './game.service';
-import { CreateGameDto, CreateGameResponseDto } from './dto/create-game.dto';
+import {
+  CreateGameDto,
+  CreateGameResponseDto,
+  PaginatedGameResponseDto,
+} from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -44,13 +50,24 @@ export class GameController {
 
   @Get()
   @ApiOperation({ summary: 'Get all registered games' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'platform', required: false, type: String })
+  @ApiQuery({ name: 'genre', required: false, type: String })
+  @ApiQuery({ name: 'title', required: false, type: String })
   @ApiResponse({
     status: 200,
     description: 'Returns all found games or an empty array [].',
-    type: [CreateGameResponseDto],
+    type: PaginatedGameResponseDto,
   })
-  findAll() {
-    return this.gameService.findAll();
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('platform') platform?: string,
+    @Query('genre') genre?: string,
+    @Query('title') title?: string,
+  ) {
+    return this.gameService.findAll(+page, +limit, platform, genre, title);
   }
 
   @Get(':id')
