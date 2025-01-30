@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  Body,
   Controller,
+  Delete,
   Param,
   Post,
   Req,
@@ -19,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { UploadImageResponseDto } from './dto/upload.dto';
 
-@ApiTags('Upload')
+@ApiTags('Images')
 @Controller('upload')
 export class CloudinaryController {
   constructor(private readonly cloudinaryService: CloudinaryService) {}
@@ -97,6 +99,33 @@ export class CloudinaryController {
     return {
       message: 'Upload completed successfully!',
       url: imageUrl,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Delete('image/game/:id/remove')
+  @ApiOperation({
+    summary: 'Remove an image from a authenticated user game',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Image removed successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Game not found or the provided URL does not correspond to an image stored for this game.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async removeGameImage(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body('imageUrl') imageUrl: string,
+  ) {
+    await this.cloudinaryService.removeGameImage(req.user.id, +id, imageUrl);
+    return {
+      message: 'Image removed successfully!',
     };
   }
 }

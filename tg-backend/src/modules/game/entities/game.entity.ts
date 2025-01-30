@@ -8,7 +8,7 @@ export class Game {
   genre: string = '';
   price: number = 0;
   forTrade: boolean = false;
-  coverImage?: string;
+  images?: string[] = [];
   createdAt: Date = new Date();
   updatedAt?: Date;
   deletedAt?: Date;

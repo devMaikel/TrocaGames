@@ -40,7 +40,7 @@ class GameResponseDto {
     description: 'The cover image of the game',
     nullable: true,
   })
-  coverImage?: string | null;
+  images?: string[];
 
   @ApiProperty({
     example: '8aed5909-da95-4a17-bf37-af685a52b623',

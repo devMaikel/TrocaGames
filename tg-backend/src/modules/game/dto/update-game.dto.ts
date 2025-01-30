@@ -51,11 +51,11 @@ export class UpdateGameDto {
   @IsOptional()
   forTrade?: boolean;
 
-  @ApiPropertyOptional({
-    description: 'URL da imagem de capa',
-    example: 'https://example.com/zelda.jpg',
-  })
-  @IsString()
-  @IsOptional()
-  coverImage?: string;
+  // @ApiPropertyOptional({
+  //   description: 'URL da imagem de capa',
+  //   example: 'https://example.com/zelda.jpg',
+  // })
+  // @IsString()
+  // @IsOptional()
+  // images?: string[];
 }

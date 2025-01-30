@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class GameService {
   constructor(private prisma: PrismaService) {}
   async create(createGameDto: CreateGameDto, userId: string) {
-    const { title, description, platform, genre, price, forTrade, coverImage } =
+    const { title, description, platform, genre, price, forTrade } =
       createGameDto;
 
     const owner = await this.prisma.user.findUnique({
@@ -26,7 +26,6 @@ export class GameService {
       ownerId: userId,
     };
     if (description !== undefined) gameData.description = description;
-    if (coverImage !== undefined) gameData.coverImage = coverImage;
 
     const game = await this.prisma.game.create({
       data: gameData,
@@ -46,7 +45,7 @@ export class GameService {
         genre: true,
         price: true,
         forTrade: true,
-        coverImage: true,
+        images: true,
         ownerId: true,
         createdAt: true,
         updatedAt: true,
@@ -65,7 +64,7 @@ export class GameService {
         genre: true,
         price: true,
         forTrade: true,
-        coverImage: true,
+        images: true,
         ownerId: true,
         createdAt: true,
         updatedAt: true,
@@ -86,7 +85,6 @@ export class GameService {
         genre: true,
         price: true,
         forTrade: true,
-        coverImage: true,
         ownerId: true,
         createdAt: true,
         updatedAt: true,
@@ -102,7 +100,6 @@ export class GameService {
         genre: updateGameDto.genre || game.genre,
         price: updateGameDto.price || game.price,
         forTrade: updateGameDto.forTrade || game.forTrade,
-        coverImage: updateGameDto.coverImage || game.coverImage,
       },
       select: {
         id: true,
@@ -112,7 +109,7 @@ export class GameService {
         genre: true,
         price: true,
         forTrade: true,
-        coverImage: true,
+        images: true,
         ownerId: true,
         createdAt: true,
         updatedAt: true,

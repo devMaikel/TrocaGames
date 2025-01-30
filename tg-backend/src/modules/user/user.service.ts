@@ -62,7 +62,7 @@ export class UserService {
             genre: true,
             price: true,
             forTrade: true,
-            coverImage: true,
+            images: true,
             ownerId: true,
           },
         },

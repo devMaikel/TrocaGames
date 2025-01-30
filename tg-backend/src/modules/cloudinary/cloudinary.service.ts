@@ -48,17 +48,24 @@ export class CloudinaryService {
   async uploadGameImage(
     file: Express.Multer.File,
     userId: string,
-    id: number,
+    gameId: number,
   ): Promise<string> {
     if (!file) {
       throw new BadRequestException('Upload file not found.');
     }
     const gameToUpdate = await this.prisma.game.findUnique({
-      where: { id: id, ownerId: userId },
+      where: { id: gameId, ownerId: userId },
+      select: { images: true },
     });
+
     if (!gameToUpdate) {
       throw new NotFoundException('Game not found.');
     }
+
+    if (gameToUpdate.images.length >= 5) {
+      throw new BadRequestException('Maximum number of images reached.');
+    }
+
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: 'uploads/games' },
@@ -71,15 +78,51 @@ export class CloudinaryService {
               new Error('Upload failed: No result from Cloudinary'),
             );
           }
+
+          const updatedImages = [...gameToUpdate.images, result.secure_url];
+
           await this.prisma.game.update({
-            where: { id: id, ownerId: userId },
-            data: { coverImage: result.secure_url },
+            where: { id: gameId, ownerId: userId },
+            data: { images: updatedImages },
           });
+
           resolve(result.secure_url);
         },
       );
 
       Readable.from(file.buffer).pipe(uploadStream);
     });
+  }
+
+  async removeGameImage(
+    userId: string,
+    gameId: number,
+    imageUrl: string,
+  ): Promise<void> {
+    const gameToUpdate = await this.prisma.game.findUnique({
+      where: { id: gameId, ownerId: userId },
+    });
+
+    if (!gameToUpdate) {
+      throw new NotFoundException('Game not found.');
+    }
+
+    if (!gameToUpdate.images.includes(imageUrl)) {
+      throw new BadRequestException(
+        'The provided URL does not correspond to an image stored for this game.',
+      );
+    }
+
+    const updatedImages = gameToUpdate.images.filter((img) => img !== imageUrl);
+
+    await this.prisma.game.update({
+      where: { id: gameId, ownerId: userId },
+      data: { images: updatedImages },
+    });
+
+    const publicId = imageUrl.split('/').pop()?.split('.')[0];
+    if (publicId) {
+      await cloudinary.uploader.destroy(`uploads/games/${publicId}`);
+    }
   }
 }

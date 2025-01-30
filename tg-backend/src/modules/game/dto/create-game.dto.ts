@@ -53,7 +53,7 @@ export class CreateGameDto {
   })
   @IsString()
   @IsOptional()
-  coverImage?: string;
+  images?: string[];
 }
 
 export class CreateGameResponseDto {
@@ -93,7 +93,7 @@ export class CreateGameResponseDto {
     description: 'URL da imagem de capa',
     nullable: true,
   })
-  coverImage: string | null = '';
+  images: string[] | null = [];
 
   @ApiProperty({
     example: '2025-01-25T02:04:37.613Z',

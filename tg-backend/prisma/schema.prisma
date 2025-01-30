@@ -30,7 +30,7 @@ model Game {
   genre         String
   price         Decimal  @db.Decimal(10, 2)
   forTrade      Boolean  @default(false) @map("for_trade")
-  coverImage    String?  @map("cover_image")
+  images        String[] @default([])
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime? @updatedAt @map("updated_at")
   deletedAt     DateTime? @map("deleted_at")
