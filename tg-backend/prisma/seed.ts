@@ -19,7 +19,7 @@ async function main() {
 
   const user2 = await prisma.user.create({
     data: {
-      id: 'useTestr-2',
+      id: 'userTest-2',
       name: 'test2',
       email: 'test2@gmail.com',
       password: await hash('123456', 8),

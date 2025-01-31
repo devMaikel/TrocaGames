@@ -18,8 +18,11 @@ model User {
   updatedAt       DateTime? @updatedAt @map("updated_at")
   deletedAt       DateTime? @map("deleted_at")
   games           Game[]
+  buyerChats  Chat[]    @relation("BuyerChats")
+  sellerChats Chat[]    @relation("SellerChats")
 
   @@map("users")
+  messages Message[]
 }
 
 model Game {
@@ -35,8 +38,39 @@ model Game {
   updatedAt     DateTime? @updatedAt @map("updated_at")
   deletedAt     DateTime? @map("deleted_at")
   ownerId       String @map("owner_id")
+  chats         Chat[]
 
   owner User @relation(fields: [ownerId], references: [id])
 
   @@map("games")
+}
+
+model Chat {
+  id        Int       @id @default(autoincrement())
+  gameId    Int       
+  buyerId   String    
+  sellerId  String    
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  game      Game      @relation(fields: [gameId], references: [id])
+  buyer     User      @relation("BuyerChats", fields: [buyerId], references: [id])
+  seller    User      @relation("SellerChats", fields: [sellerId], references: [id])
+  messages  Message[]
+
+  @@map("chats")
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  chatId    Int      
+  senderId  String   
+  content   String   
+  createdAt DateTime @default(now())
+
+  // Relacionamentos
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
+
+  @@map("messages")
 }
