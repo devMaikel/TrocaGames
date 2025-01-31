@@ -110,4 +110,21 @@ export class UserController {
   remove(@Req() req: AuthenticatedRequest) {
     return this.userService.remove(req.user.id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Get()
+  @ApiOperation({ summary: 'Returns authenticated user data' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the user data.',
+    type: UserWithGamesResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found.',
+  })
+  getAuthUser(@Req() req: AuthenticatedRequest) {
+    return this.userService.findOne(req.user.id);
+  }
 }

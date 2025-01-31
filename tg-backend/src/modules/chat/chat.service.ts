@@ -50,7 +50,11 @@ export class ChatService {
         buyer: { select: { name: true } },
         seller: { select: { name: true } },
         messages: {
-          select: { sender: { select: { name: true } }, content: true },
+          select: {
+            sender: { select: { name: true } },
+            content: true,
+            createdAt: true,
+          },
         },
       },
     });
