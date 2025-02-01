@@ -52,6 +52,7 @@ export async function login(email: string, password: string) {
 
     // 4. Salva o user_id no localStorage
     localStorage.setItem("user_id", userData.id);
+    localStorage.setItem("user_name", userData.name);
 
     return "Login successful!";
   } catch (error) {

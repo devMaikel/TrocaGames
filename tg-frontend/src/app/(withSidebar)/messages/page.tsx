@@ -15,6 +15,10 @@ export default function MessagesPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  console.log("selectedChat", selectedChat?.messages);
+  const userId = localStorage.getItem("user_id");
+  const userName = localStorage.getItem("user_name");
+
   const fetchChats = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
@@ -95,6 +99,7 @@ export default function MessagesPage() {
           messages: [...prevChat!.messages, newMessageData],
         }));
         setNewMessage("");
+        router.push("/home");
       } else if (response.status === 401) {
         localStorage.removeItem("access_token");
         router.push("/login");
@@ -128,8 +133,7 @@ export default function MessagesPage() {
       <div className="space-y-4">
         {chats.map((chat) => {
           const lastMessage = chat.messages[chat.messages.length - 1];
-          const otherUser =
-            chat.buyerId === "userTest-1" ? chat.seller : chat.buyer;
+          const otherUser = chat.buyerId === userId ? chat.seller : chat.buyer;
 
           return (
             <div
@@ -162,21 +166,24 @@ export default function MessagesPage() {
           <div className="p-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
               Chat com{" "}
-              {selectedChat.buyerId === "userTest-1"
+              {selectedChat.buyerId === userId
                 ? selectedChat.seller.name
                 : selectedChat.buyer.name}
             </h2>
 
-            <div className="space-y-4 max-h-96 overflow-y-auto">
+            <div className="space-y-4 max-h-96 overflow-y-auto p-2">
               {selectedChat.messages.map((message) => (
                 <div
                   key={message.createdAt}
-                  className={`p-4 rounded-lg ${
-                    message.sender?.name === "userTest-1"
-                      ? "bg-blue-100 ml-auto"
-                      : "bg-gray-100"
+                  className={`p-4 rounded-lg max-w-xs ${
+                    message.sender?.name === userName
+                      ? "bg-blue-100 ml-auto text-right"
+                      : "bg-gray-100 text-left"
                   }`}
                 >
+                  <p className="text-sm font-bold text-gray-800">
+                    {message.sender?.name}
+                  </p>
                   <p className="text-sm text-gray-800">{message.content}</p>
                   <p className="text-xs text-gray-500 mt-1">
                     {new Date(message.createdAt).toLocaleString()}
