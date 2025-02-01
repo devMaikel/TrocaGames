@@ -17,20 +17,45 @@ export async function fetchGames(
 }
 
 export async function login(email: string, password: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    // 1. Faz o login e obtém o access_token
+    const loginResponse = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error("Erro ao fazer login");
+    const loginData = await loginResponse.json();
+
+    if (!loginResponse.ok) {
+      throw new Error("Erro ao fazer login");
+    }
+
+    // 2. Salva o access_token no localStorage
+    localStorage.setItem("access_token", loginData.access_token);
+
+    // 3. Usa o access_token para buscar os dados do usuário
+    const userResponse = await fetch(`${API_BASE_URL}/user`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${loginData.access_token}`,
+      },
+    });
+
+    const userData = await userResponse.json();
+
+    if (!userResponse.ok) {
+      throw new Error("Erro ao buscar dados do usuário");
+    }
+
+    // 4. Salva o user_id no localStorage
+    localStorage.setItem("user_id", userData.id);
+
+    return "Login successful!";
+  } catch (error) {
+    console.error("Erro durante o login:", error);
+    throw error; // Propaga o erro para ser tratado no componente que chamou a função
   }
-  if (response.ok) {
-    localStorage.setItem("access_token", data.access_token);
-  }
-  return "Login successful!";
 }

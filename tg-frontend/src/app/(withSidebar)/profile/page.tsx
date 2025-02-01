@@ -1,21 +1,91 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const [user, setUser] = useState({
-    name: "test",
-    email: "test@gmail.com",
+    id: "",
+    name: "",
+    email: "",
     profilePicture: null,
-    bio: null,
+    bio: "",
+    games: [],
   });
+  const router = useRouter();
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleSave = () => {
-    console.log("Dados salvos:", user);
-    setIsEditing(false);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        console.error("Token não encontrado no localStorage");
+        return;
+      }
+
+      try {
+        const response = await fetch("https://gamestrade.onrender.com/user", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        } else if (response.status === 401) {
+          localStorage.removeItem("access_token");
+          toast.error("Sessão expirada. Faça login novamente.");
+          router.push("/login");
+        } else {
+          console.error("Erro ao buscar dados do usuário");
+        }
+      } catch (err) {
+        console.error("Erro ao conectar com o servidor:", err);
+      }
+    };
+
+    fetchUserData();
+  }, [router]);
+
+  const handleSave = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      console.error("Token não encontrado no localStorage");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://gamestrade.onrender.com/user", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+          bio: user.bio,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("Dados salvos com sucesso!");
+        setIsEditing(false);
+      } else if (response.status === 401) {
+        localStorage.removeItem("access_token");
+        toast.error("Sessão expirada. Faça login novamente.");
+        router.push("/login");
+      } else {
+        console.error("Erro ao salvar dados do usuário");
+      }
+    } catch (err) {
+      console.error("Erro ao conectar com o servidor:", err);
+    }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,16 +94,32 @@ export default function Profile() {
       const formData = new FormData();
       formData.append("file", file);
 
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        console.error("Token não encontrado no localStorage");
+        return;
+      }
+
       try {
-        const response = await fetch("/upload/image/profile", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          "https://gamestrade.onrender.com/upload/image/profile",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
           setUser({ ...user, profilePicture: data.url });
           console.log("Upload da foto realizado com sucesso!");
+        } else if (response.status === 401) {
+          localStorage.removeItem("access_token");
+          toast.error("Sessão expirada. Faça login novamente.");
+          router.push("/login");
         } else {
           console.error("Erro ao fazer upload da foto");
         }
@@ -86,7 +172,7 @@ export default function Profile() {
                 type="text"
                 value={user.name}
                 onChange={(e) => setUser({ ...user, name: e.target.value })}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900" // Adicione bg-white e text-gray-900
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
               />
             ) : (
               <p className="mt-1 text-gray-900">{user.name}</p>
@@ -102,7 +188,7 @@ export default function Profile() {
                 type="email"
                 value={user.email}
                 onChange={(e) => setUser({ ...user, email: e.target.value })}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900" // Adicione bg-white e text-gray-900
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
               />
             ) : (
               <p className="mt-1 text-gray-900">{user.email}</p>
@@ -117,7 +203,7 @@ export default function Profile() {
               <textarea
                 value={user.bio || ""}
                 onChange={(e) => setUser({ ...user, bio: e.target.value })}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900" // Adicione bg-white e text-gray-900
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                 rows={3}
               />
             ) : (
