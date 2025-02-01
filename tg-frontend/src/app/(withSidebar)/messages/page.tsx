@@ -16,8 +16,8 @@ export default function MessagesPage() {
   const router = useRouter();
 
   console.log("selectedChat", selectedChat?.messages);
-  const userId = localStorage.getItem("user_id");
-  const userName = localStorage.getItem("user_name");
+  const userId = localStorage.getItem("user_id") || "";
+  const userName = localStorage.getItem("user_name") || "";
 
   const fetchChats = async () => {
     const token = localStorage.getItem("access_token");
