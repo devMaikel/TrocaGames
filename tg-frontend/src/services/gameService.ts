@@ -34,6 +34,7 @@ export const gameDetails = async (id: string): Promise<Response> => {
 
 export const patchGame = async (
   id: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editedGame: any
 ): Promise<Response> => {
   const token = localStorage.getItem("access_token");
