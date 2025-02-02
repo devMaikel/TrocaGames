@@ -5,6 +5,10 @@ import { useState, useEffect } from "react";
 import { Chat, Message } from "./types";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import {
+  getChatsByUserToken,
+  postNewChatMessage,
+} from "@/services/chatService";
 
 export default function MessagesPage() {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -22,21 +26,8 @@ export default function MessagesPage() {
     typeof window !== "undefined" ? localStorage.getItem("user_name") : "";
 
   const fetchChats = async () => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      setError("Usuário não autenticado");
-      return;
-    }
-
     try {
-      const response = await fetch(
-        "https://gamestrade.onrender.com/chat/user",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await getChatsByUserToken();
 
       if (response.ok) {
         const data: Chat[] = await response.json();
@@ -82,17 +73,7 @@ export default function MessagesPage() {
     }
 
     try {
-      const response = await fetch("https://gamestrade.onrender.com/message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          chatId: selectedChat.id,
-          content: newMessage,
-        }),
-      });
+      const response = await postNewChatMessage(selectedChat.id, newMessage);
 
       if (response.status === 201) {
         const newMessageData: Message = await response.json();

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Game } from "@/types/games";
 import GameCard from "../home/components/GameCard";
 import { toast } from "react-toastify";
+import { getUserDataByToken } from "@/services/userService";
 
 export default function MyGames() {
   const [games, setGames] = useState<Game[]>([]);
@@ -23,12 +24,7 @@ export default function MyGames() {
       }
 
       try {
-        const response = await fetch("https://gamestrade.onrender.com/user", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await getUserDataByToken();
 
         if (response.ok) {
           const data = await response.json();

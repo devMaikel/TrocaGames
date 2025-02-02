@@ -4,6 +4,11 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import {
+  getUserDataByToken,
+  patchUserDataByToken,
+  uploadProfileImage,
+} from "@/services/userService";
 
 export default function Profile() {
   const [user, setUser] = useState({
@@ -27,12 +32,7 @@ export default function Profile() {
       }
 
       try {
-        const response = await fetch("https://gamestrade.onrender.com/user", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await getUserDataByToken();
 
         if (response.ok) {
           const data = await response.json();
@@ -60,18 +60,11 @@ export default function Profile() {
     }
 
     try {
-      const response = await fetch("https://gamestrade.onrender.com/user", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: user.name,
-          email: user.email,
-          bio: user.bio,
-        }),
-      });
+      const response = await patchUserDataByToken(
+        user.name,
+        user.email,
+        user.bio
+      );
 
       if (response.ok) {
         console.log("Dados salvos com sucesso!");
@@ -101,16 +94,7 @@ export default function Profile() {
       }
 
       try {
-        const response = await fetch(
-          "https://gamestrade.onrender.com/upload/image/profile",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          }
-        );
+        const response = await uploadProfileImage(formData);
 
         if (response.ok) {
           const data = await response.json();

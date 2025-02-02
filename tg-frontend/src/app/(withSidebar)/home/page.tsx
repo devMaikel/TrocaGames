@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchGames } from "@/lib/api";
 import { Game } from "@/types/games";
 import GameCard from "./components/GameCard";
+import { fetchGames } from "@/services/gameService";
 
 export default function HomePage() {
   const [games, setGames] = useState<Game[]>([]);

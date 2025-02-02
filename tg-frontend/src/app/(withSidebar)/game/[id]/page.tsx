@@ -10,6 +10,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { gameDetails } from "@/services/gameService";
+import { createChat } from "@/services/chatService";
 
 interface GameDetailsProps {
   params: Params;
@@ -32,15 +34,7 @@ export default function GameDetails({ params }: GameDetailsProps) {
   useEffect(() => {
     const fetchGameDetails = async () => {
       try {
-        const response = await fetch(
-          `https://gamestrade.onrender.com/game/${id}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await gameDetails(id);
 
         if (response.ok) {
           const data = await response.json();
@@ -74,14 +68,7 @@ export default function GameDetails({ params }: GameDetailsProps) {
     }
 
     try {
-      const response = await fetch("https://gamestrade.onrender.com/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ gameId: +id }),
-      });
+      const response = await createChat(+id);
 
       if (response.ok) {
         toast.success("Chat criado com sucesso!");
