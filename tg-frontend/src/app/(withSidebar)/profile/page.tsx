@@ -79,6 +79,7 @@ export default function Profile() {
     } catch (err) {
       console.error("Erro ao conectar com o servidor:", err);
     }
+    toast.info("Caso tenha alterado email, faça login novamente.");
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

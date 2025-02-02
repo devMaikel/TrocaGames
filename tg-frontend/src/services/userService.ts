@@ -1,5 +1,4 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const token = localStorage.getItem("access_token");
 
 export async function login(email: string, password: string): Promise<string> {
   try {
@@ -43,6 +42,7 @@ export async function login(email: string, password: string): Promise<string> {
 }
 
 export const validateToken = async (): Promise<boolean> => {
+  const token = localStorage.getItem("access_token");
   try {
     const userResponse = await fetch(`${API_BASE_URL}/user`, {
       method: "GET",
@@ -68,6 +68,7 @@ export const validateToken = async (): Promise<boolean> => {
 };
 
 export const getUserDataByToken = async (): Promise<Response> => {
+  const token = localStorage.getItem("access_token");
   try {
     const userResponse = await fetch(`${API_BASE_URL}/user`, {
       method: "GET",
@@ -87,24 +88,31 @@ export const patchUserDataByToken = async (
   email: string,
   bio: string
 ): Promise<Response> => {
-  const response = await fetch(`${API_BASE_URL}/user`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      name,
-      email,
-      bio,
-    }),
-  });
-  return response;
+  const token = localStorage.getItem("access_token");
+  try {
+    const response = await fetch(`${API_BASE_URL}/user`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        bio,
+      }),
+    });
+    return response;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Erro ao alterar dados do usuário.");
+  }
 };
 
 export const uploadProfileImage = async (
   formData: FormData
 ): Promise<Response> => {
+  const token = localStorage.getItem("access_token");
   try {
     const response = await fetch(`${API_BASE_URL}/upload/image/profile`, {
       method: "POST",
@@ -117,5 +125,29 @@ export const uploadProfileImage = async (
   } catch (err) {
     console.log(err);
     throw new Error("Erro no upload de foto.");
+  }
+};
+
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string
+): Promise<Response> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+    return response;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Erro ao registrar usuário.");
   }
 };

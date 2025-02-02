@@ -1,7 +1,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const token = localStorage.getItem("access_token");
 
 export const createChat = async (gameId: number): Promise<Response> => {
+  const token = localStorage.getItem("access_token");
   try {
     const response = await fetch(`${API_BASE_URL}/chat`, {
       method: "POST",
@@ -11,6 +11,8 @@ export const createChat = async (gameId: number): Promise<Response> => {
       },
       body: JSON.stringify({ gameId }),
     });
+    const chatData = await response.json();
+    await postNewChatMessage(chatData.id, "Chat iniciado!");
     return response;
   } catch (err) {
     console.log(err);
@@ -19,6 +21,7 @@ export const createChat = async (gameId: number): Promise<Response> => {
 };
 
 export const getChatsByUserToken = async (): Promise<Response> => {
+  const token = localStorage.getItem("access_token");
   try {
     const response = await fetch(`${API_BASE_URL}/chat/user`, {
       method: "GET",
@@ -37,6 +40,7 @@ export const postNewChatMessage = async (
   chatId: number,
   content: string
 ): Promise<Response> => {
+  const token = localStorage.getItem("access_token");
   try {
     const response = await fetch(`${API_BASE_URL}/message`, {
       method: "POST",

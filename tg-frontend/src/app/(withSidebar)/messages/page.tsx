@@ -82,6 +82,7 @@ export default function MessagesPage() {
           messages: [...prevChat!.messages, newMessageData],
         }));
         setNewMessage("");
+        toast.success("Mensagem enviada com sucesso!");
         router.push("/home");
       } else if (response.status === 401) {
         localStorage.removeItem("access_token");
