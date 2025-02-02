@@ -5,7 +5,7 @@ export interface Game {
   platform: string;
   genre: string;
   price: string;
-  forTrade: boolean;
+  forTrade: boolean | string;
   images: string[];
   ownerId: string;
   createdAt: string;

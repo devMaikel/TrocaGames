@@ -92,7 +92,9 @@ export default function GameDetails({ params }: GameDetailsProps) {
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    setEditedGame(game);
+    if (game) {
+      setEditedGame(game);
+    }
   };
 
   const handleInputChange = (
