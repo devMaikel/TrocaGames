@@ -1,37 +1,44 @@
-# Projeto de Plataforma para Troca de Jogos
+# 📌 Plataforma para Troca de Jogos  
 
-Este é um projeto de plataforma de troca de jogos, onde os usuários podem se cadastrar, cadastrar seus jogos, buscar jogos para comprar ou trocar. O projeto é composto por um backend em **NestJS** com autenticação JWT e um frontend em **Next.js** (em desenvolvimento).
+Este é um projeto de plataforma de troca e venda de jogos, onde os usuários podem se cadastrar, listar seus jogos, buscar títulos disponíveis para compra ou troca e interagir com outros usuários.  
 
-## Funcionalidades
+O projeto conta com um **backend em NestJS** e um **frontend em Next.js** (em desenvolvimento).  
 
-### Backend (NestJS)
+## 🚀 Funcionalidades  
 
-- **Autenticação JWT**: Segurança robusta com autenticação baseada em tokens.
-- **CRUD de Usuários**: Cadastro, login, atualização e exclusão de usuários.
-- **CRUD de Jogos**: Cadastro, listagem, atualização e exclusão de jogos.
-- **Busca de Jogos**: Funcionalidade para buscar jogos disponíveis para troca ou compra.
-- **Banco de Dados**: Utilização do **Prisma** como ORM para gerenciar o banco de dados PostgreSQL.
+### 🖥 Backend (NestJS)  
 
-### Frontend (Next.js) - Em Desenvolvimento
+- ✅ **Autenticação JWT** – Segurança robusta com autenticação baseada em tokens.  
+- ✅ **CRUD de Usuários** – Cadastro, login, atualização e exclusão de usuários.  
+- ✅ **CRUD de Jogos** – Cadastro, listagem, atualização e exclusão de jogos.  
+- ✅ **Gerenciamento de Imagens** – Upload e remoção de imagens dos jogos via **Cloudinary**.  
+- ✅ **Busca de Jogos** – Pesquisa de jogos disponíveis para troca ou compra.  
+- ✅ **Sistema de Chats (WebSockets)** – Comunicação em tempo real entre os usuários. (ainda não implementado)  
+- ✅ **Banco de Dados** – Uso do **Prisma ORM** para gerenciamento do banco **PostgreSQL**.  
 
-- **Interface de Usuário**: Páginas para cadastro, login, listagem de jogos e busca.
-- **Integração com Backend**: Consumo da API do backend para autenticação e gerenciamento de jogos.
+### 🎨 Frontend (Next.js) - Em Desenvolvimento  
 
-## Tecnologias Utilizadas
+- ✅ **Interface de Usuário** – Páginas para cadastro, login, listagem de jogos, adição de jogos, mensagens entre usuários e outras funcionalidades.  
+- ✅ **Integração com Backend** – Consumo da API para autenticação, gerenciamento de jogos, interações entre usuários e mais.  
+- ✅ **Estilização com Tailwind CSS** – Estilos modernos, responsivos e de fácil manutenção.  
 
-### Backend
+## 🛠 Tecnologias Utilizadas  
 
-- **NestJS**: Framework Node.js para construção de aplicações server-side.
-- **Prisma**: ORM para gerenciamento do banco de dados.
-- **PostgreSQL**: Banco de dados relacional.
-- **JWT**: Autenticação baseada em tokens.
-- **Render**: Hospedagem do backend.
+### Backend | 🔗 [API Docs](https://gamestrade.onrender.com/api#/)  
 
-### Frontend
+- **NestJS** – Framework Node.js para construção de APIs escaláveis.  
+- **Prisma** – ORM para modelagem e interação com o banco de dados.  
+- **PostgreSQL** – Banco de dados relacional.  
+- **JWT** – Autenticação segura baseada em tokens.  
+- **Cloudinary** – Armazenamento de imagens.  
+- **WebSockets** – Comunicação em tempo real entre usuários.  
+- **Render** – Hospedagem do backend.  
 
-- **Next.js**: Framework React para construção de interfaces de usuário.
-- **React**: Biblioteca para construção de interfaces.
-- **Axios**: Cliente HTTP para consumo da API.
+### Frontend | 🔗 [Live Demo](https://gamestrade.vercel.app/)  
+
+- **Next.js** – Framework React para construção de interfaces de usuário.  
+- **React.js** – Biblioteca JavaScript para criação de componentes interativos.  
+- **Tailwind CSS** – Framework de estilização baseado em classes utilitárias, que permite criar layouts responsivos e modernos de forma rápida e eficiente.  
 
 ## Contato
 
