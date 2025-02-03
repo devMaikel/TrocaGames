@@ -7,7 +7,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import { gameAddImage, gameDetails, patchGame } from "@/services/gameService";
+import {
+  deleteGame,
+  gameAddImage,
+  gameDetails,
+  patchGame,
+} from "@/services/gameService";
 import { createChat } from "@/services/chatService";
 import Modal from "react-modal";
 
@@ -153,6 +158,24 @@ export default function GameDetails({ params }: GameDetailsProps) {
 
   const handleEditGame = () => {
     setIsEditing(true);
+  };
+
+  const handleDeleteGame = async () => {
+    try {
+      setIsLoading(true);
+      const response = await deleteGame(id);
+      if (response.ok) {
+        toast.success("Jogo deletado com sucesso!");
+        router.push("/my-games");
+      } else {
+        toast.error("Erro ao deletar o jogo");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Erro ao deletar o jogo");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -390,15 +413,15 @@ export default function GameDetails({ params }: GameDetailsProps) {
                 </button>
               </div>
             ) : (
-              <div>
+              <div className="flex flex-wrap justify-center gap-4">
                 <button
                   onClick={handleEditGame}
                   className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
                 >
-                  Editar meu jogo
+                  Editar
                 </button>
                 <button
-                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 ml-4"
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                   onClick={handleAddImageBtn}
                   disabled={game.images.length >= 5}
                 >
@@ -410,6 +433,12 @@ export default function GameDetails({ params }: GameDetailsProps) {
                     className="hidden"
                     accept="image/*"
                   />
+                </button>
+                <button
+                  onClick={handleDeleteGame}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Apagar
                 </button>
               </div>
             )}

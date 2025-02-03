@@ -128,3 +128,20 @@ export async function fetchFilters(): Promise<{
 
   return response.json();
 }
+
+export async function deleteGame(id: string | number): Promise<Response> {
+  const token = localStorage.getItem("access_token");
+  console.log(`endpoint: ${API_BASE_URL}/game${id}`);
+  try {
+    const response = await fetch(`${API_BASE_URL}/game/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Erro ao deletar jogo.");
+  }
+}

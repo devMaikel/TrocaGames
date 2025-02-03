@@ -54,6 +54,7 @@ export class UserService {
         profilePicture: true,
         bio: true,
         games: {
+          where: { deletedAt: null },
           select: {
             id: true,
             title: true,

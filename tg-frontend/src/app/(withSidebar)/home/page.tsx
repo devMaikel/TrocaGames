@@ -13,12 +13,10 @@ export default function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Estados dos filtros
   const [platform, setPlatform] = useState("");
   const [genre, setGenre] = useState("");
   const [title, setTitle] = useState("");
 
-  // Estados para armazenar as opções disponíveis
   const [platforms, setPlatforms] = useState<string[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
 
@@ -66,7 +64,6 @@ export default function HomePage() {
         Catálogo de jogos
       </h1>
 
-      {/* Filtros */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4">
         <input
           type="text"
@@ -103,7 +100,6 @@ export default function HomePage() {
         </select>
       </div>
 
-      {/* Lista de Jogos */}
       {loading ? (
         <p className="text-center text-gray-600">Carregando...</p>
       ) : error ? (
@@ -116,7 +112,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Paginação */}
           <div className="flex justify-center mt-8">
             {Array.from({ length: totalPages }, (_, i) => (
               <button
