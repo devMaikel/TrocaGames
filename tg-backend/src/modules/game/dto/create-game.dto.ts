@@ -139,3 +139,17 @@ export class PaginatedGameResponseDto {
   @ApiProperty({ type: MetaDto, description: 'Metadados da paginação' })
   meta: MetaDto = { total: 0, page: 0, limit: 0, totalPages: 0 };
 }
+
+export class GameFiltersResponseDto {
+  @ApiProperty({
+    example: ['PC', 'PlayStation', 'Xbox', 'Nintendo Switch'],
+    description: 'Lista de plataformas disponíveis',
+  })
+  platforms: string[] = [];
+
+  @ApiProperty({
+    example: ['Ação', 'RPG', 'Esportes', 'Estratégia'],
+    description: 'Lista de gêneros disponíveis',
+  })
+  genres: string[] = [];
+}

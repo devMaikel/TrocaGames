@@ -179,4 +179,23 @@ export class GameService {
     });
     return { message: 'The game has been deleted successfully' };
   }
+
+  async findFilters() {
+    const platforms = await this.prisma.game.findMany({
+      where: { deletedAt: null },
+      select: { platform: true },
+      distinct: ['platform'],
+    });
+
+    const genres = await this.prisma.game.findMany({
+      where: { deletedAt: null },
+      select: { genre: true },
+      distinct: ['genre'],
+    });
+
+    return {
+      platforms: platforms.map((p) => p.platform).filter(Boolean),
+      genres: genres.map((g) => g.genre).filter(Boolean),
+    };
+  }
 }

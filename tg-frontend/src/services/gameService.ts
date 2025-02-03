@@ -4,16 +4,26 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function fetchGames(
   page: number = 1,
-  limit: number = 12
+  limit: number = 12,
+  platform?: string,
+  genre?: string,
+  title?: string
 ): Promise<GamesApiResponse> {
-  const response = await fetch(
-    `${API_BASE_URL}/game?page=${page}&limit=${limit}`
-  );
+  const queryParams = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(platform && { platform }),
+    ...(genre && { genre }),
+    ...(title && { title }),
+  });
+
+  const response = await fetch(`${API_BASE_URL}/game?${queryParams}`);
+
   if (!response.ok) {
     throw new Error("Erro ao buscar jogos");
   }
-  const data = response.json();
-  return data;
+
+  return response.json();
 }
 
 export const gameDetails = async (id: string): Promise<Response> => {
@@ -47,7 +57,6 @@ export const patchGame = async (
       },
       body: JSON.stringify(editedGame),
     });
-    console.log("ress", response);
     return response;
   } catch (err) {
     console.log(err);
@@ -106,3 +115,16 @@ export const gameAdd = async (
     throw new Error("Erro ao adicionar jogo.");
   }
 };
+
+export async function fetchFilters(): Promise<{
+  platforms: string[];
+  genres: string[];
+}> {
+  const response = await fetch(`${API_BASE_URL}/game/filters`);
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar filtros");
+  }
+
+  return response.json();
+}

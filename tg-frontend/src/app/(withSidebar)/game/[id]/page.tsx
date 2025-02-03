@@ -103,7 +103,6 @@ export default function GameDetails({ params }: GameDetailsProps) {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
           setGame(data);
           setEditedGame(data);
         } else if (response.status === 404) {
@@ -173,7 +172,6 @@ export default function GameDetails({ params }: GameDetailsProps) {
   };
 
   const handleUpdateGame = async () => {
-    console.log("Edited game:", id, editedGame);
     try {
       const response = await patchGame(id, {
         title: editedGame.title,

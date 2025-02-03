@@ -19,7 +19,6 @@ export default function MessagesPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  console.log("selectedChat", selectedChat?.messages);
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("user_id") : "";
   const userName =

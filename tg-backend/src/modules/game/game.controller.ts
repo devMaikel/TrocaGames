@@ -14,6 +14,7 @@ import { GameService } from './game.service';
 import {
   CreateGameDto,
   CreateGameResponseDto,
+  GameFiltersResponseDto,
   PaginatedGameResponseDto,
 } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
@@ -46,6 +47,17 @@ export class GameController {
     @Body() createGameDto: CreateGameDto,
   ) {
     return this.gameService.create(createGameDto, req.user.id);
+  }
+
+  @Get('filters')
+  @ApiOperation({ summary: 'Get all registered platforms and genres' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all registered platforms and genres.',
+    type: GameFiltersResponseDto,
+  })
+  async getFilters() {
+    return this.gameService.findFilters();
   }
 
   @Get()
