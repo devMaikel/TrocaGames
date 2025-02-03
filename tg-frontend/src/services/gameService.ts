@@ -54,3 +54,55 @@ export const patchGame = async (
     throw new Error("Erro ao atualizar dados do jogo.");
   }
 };
+
+export const gameAddImage = async (gameId: number, formData: FormData) => {
+  const token = localStorage.getItem("access_token");
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/upload/image/game/${gameId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+    return response;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Erro ao adicionar imagem ao jogo.");
+  }
+};
+
+export const gameAdd = async (
+  title: string,
+  description: string,
+  platform: string,
+  genre: string,
+  price: string | number,
+  forTrade: boolean
+) => {
+  const token = localStorage.getItem("access_token");
+  try {
+    const response = await fetch(`${API_BASE_URL}/game`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        platform,
+        genre,
+        price: Number(price),
+        forTrade,
+      }),
+    });
+    return response;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Erro ao adicionar jogo.");
+  }
+};

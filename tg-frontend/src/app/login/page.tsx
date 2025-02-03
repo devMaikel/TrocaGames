@@ -202,7 +202,8 @@ export default function LoginPage() {
           <div className="flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-t-transparent border-blue-500 rounded-full animate-spin mb-4"></div>
             <p className="text-white text-lg">
-              Aguarde um instante enquanto conectamos ao servidor...
+              Aguarde um instante enquanto conectamos ao servidor...(pode levar
+              até um minuto)
             </p>
           </div>
         </div>

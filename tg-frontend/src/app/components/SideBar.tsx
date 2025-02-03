@@ -11,6 +11,7 @@ export default function Sidebar() {
 
   const menuItems = [
     { name: "Catálogo de jogos", href: "/home" },
+    { name: "Cadastrar novo jogo", href: "/new-game" },
     { name: "Meus jogos", href: "/my-games" },
     { name: "Mensagens", href: "/messages" },
     { name: "Minha conta", href: "/profile" },
