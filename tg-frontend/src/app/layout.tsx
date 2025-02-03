@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "GamesTrade",
   description: "Plataforma de troca e venda de jogos",
+  icons: "/favicon.ico",
 };
 
 export default function RootLayout({
