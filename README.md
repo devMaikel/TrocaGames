@@ -20,7 +20,7 @@ O projeto conta com um **backend em NestJS** e um **frontend em Next.js** (em de
 
 - ✅ **Interface de Usuário** – Páginas para cadastro, login, listagem de jogos, adição de jogos, mensagens entre usuários e outras funcionalidades.  
 - ✅ **Integração com Backend** – Consumo da API para autenticação, gerenciamento de jogos, interações entre usuários e mais.  
-- ✅ **Estilização com Tailwind CSS** – Estilos modernos, responsivos e de fácil manutenção.  
+- ✅ **Estilização com Tailwind CSS** – Estilos modernos, responsivos e de fácil manutenção.
 
 ## 🛠 Tecnologias Utilizadas  
 
@@ -38,7 +38,8 @@ O projeto conta com um **backend em NestJS** e um **frontend em Next.js** (em de
 
 - **Next.js** – Framework React para construção de interfaces de usuário.  
 - **React.js** – Biblioteca JavaScript para criação de componentes interativos.  
-- **Tailwind CSS** – Framework de estilização baseado em classes utilitárias, que permite criar layouts responsivos e modernos de forma rápida e eficiente.  
+- **Tailwind CSS** – Framework de estilização baseado em classes utilitárias, que permite criar layouts responsivos e modernos de forma rápida e eficiente.
+- **Vercel** - Hospedagem na Vercel  
 
 ## Contato
 
