@@ -47,16 +47,20 @@ export default function MyGames() {
     fetchUserGames();
   }, [router]);
 
-  if (loading) {
-    return <p className="text-center text-gray-600">Carregando...</p>;
-  }
-
   if (error) {
     return <p className="text-center text-red-500">{error}</p>;
   }
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg">
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 border-4 border-t-transparent border-blue-500 rounded-full animate-spin mb-4"></div>
+            <p className="text-white text-lg">Carregando...</p>
+          </div>
+        </div>
+      )}
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
         Meus Jogos
       </h1>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { login, registerUser } from "@/services/userService";
 import { toast } from "react-toastify";
+import { fetchGames } from "@/services/gameService";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    fetchGames();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

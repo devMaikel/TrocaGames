@@ -92,7 +92,7 @@ export class UserService {
 
     if (updateUserDto.email && updateUserDto.email !== user.email) {
       const userWithSameEmail = await this.prisma.user.findUnique({
-        where: { email: updateUserDto.email },
+        where: { email: updateUserDto.email, deletedAt: null },
         select: {
           id: true,
         },

@@ -11,6 +11,8 @@ import {
 } from "@/services/userService";
 
 export default function Profile() {
+  const [currentEmail, setCurrentEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     id: "",
     name: "",
@@ -32,11 +34,13 @@ export default function Profile() {
       }
 
       try {
+        setLoading(true);
         const response = await getUserDataByToken();
 
         if (response.ok) {
           const data = await response.json();
           setUser(data);
+          setCurrentEmail(data.email);
         } else if (response.status === 401) {
           localStorage.removeItem("access_token");
           toast.error("Sessão expirada. Faça login novamente.");
@@ -46,6 +50,8 @@ export default function Profile() {
         }
       } catch (err) {
         console.error("Erro ao conectar com o servidor:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -60,15 +66,26 @@ export default function Profile() {
     }
 
     try {
+      setLoading(true);
       const response = await patchUserDataByToken(
         user.name,
         user.email,
         user.bio
       );
+      console.log(response);
+      if (response.status == 409) {
+        toast.error("O email já está sendo utilizado por outra conta.");
+      }
 
       if (response.ok) {
         console.log("Dados salvos com sucesso!");
         setIsEditing(false);
+        if (user.email !== currentEmail) {
+          toast.info(
+            "Como seu email foi alterado é necessário que efetue o login novamente."
+          );
+          router.push("/login");
+        }
       } else if (response.status === 401) {
         localStorage.removeItem("access_token");
         toast.error("Sessão expirada. Faça login novamente.");
@@ -78,8 +95,9 @@ export default function Profile() {
       }
     } catch (err) {
       console.error("Erro ao conectar com o servidor:", err);
+    } finally {
+      setLoading(false);
     }
-    toast.info("Caso tenha alterado email, faça login novamente.");
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +113,7 @@ export default function Profile() {
       }
 
       try {
+        setLoading(true);
         const response = await uploadProfileImage(formData);
 
         if (response.ok) {
@@ -110,12 +129,22 @@ export default function Profile() {
         }
       } catch (err) {
         console.error("Erro ao conectar com o servidor:", err);
+      } finally {
+        setLoading(false);
       }
     }
   };
 
   return (
     <div>
+      {loading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 border-4 border-t-transparent border-blue-500 rounded-full animate-spin mb-4"></div>
+            <p className="text-white text-lg">Carregando...</p>
+          </div>
+        </div>
+      )}
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Meu Perfil</h1>
 
       <div className="flex flex-col items-center mb-6">
