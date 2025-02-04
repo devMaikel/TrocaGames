@@ -30,6 +30,8 @@ export default function Profile() {
       const token = localStorage.getItem("access_token");
       if (!token) {
         console.error("Token não encontrado no localStorage");
+        toast.error("Sessão expirada. Faça login novamente.");
+        router.push("/login");
         return;
       }
 

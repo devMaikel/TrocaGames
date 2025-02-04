@@ -53,7 +53,7 @@ export const validateToken = async (): Promise<boolean> => {
 
     const userData = await userResponse.json();
 
-    if (!userResponse.ok) {
+    if (!userResponse.ok || userResponse.status === 401) {
       console.log("token inválido");
       return false;
     }

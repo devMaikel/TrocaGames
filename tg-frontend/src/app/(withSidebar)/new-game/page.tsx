@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { gameAdd, gameAddImage } from "@/services/gameService";
+import { validateToken } from "@/services/userService";
 
 export default function NewGamePage() {
   const [title, setTitle] = useState("");
@@ -15,6 +17,14 @@ export default function NewGamePage() {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const validate = async () => {
+      const auth = await validateToken();
+      if (!auth) router.push("/login");
+    };
+    validate();
+  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
