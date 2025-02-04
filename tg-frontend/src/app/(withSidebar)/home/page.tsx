@@ -12,6 +12,7 @@ export default function HomePage() {
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [userId, setUserId] = useState("");
 
   const [platform, setPlatform] = useState("");
   const [genre, setGenre] = useState("");
@@ -24,9 +25,11 @@ export default function HomePage() {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    if (!token) {
+    const userId = localStorage.getItem("user_id");
+    if (!token || !userId) {
       router.push("/login");
     } else {
+      setUserId(userId);
       loadFilters();
       loadGames();
     }
@@ -107,9 +110,10 @@ export default function HomePage() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {games.map((game) => (
-              <GameCard key={game.id} game={game} />
-            ))}
+            {games.map((game) => {
+              if (game.ownerId !== userId)
+                return <GameCard key={game.id} game={game} />;
+            })}
           </div>
 
           <div className="flex justify-center mt-8">
