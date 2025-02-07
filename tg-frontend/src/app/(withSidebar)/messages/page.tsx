@@ -77,7 +77,7 @@ export default function MessagesPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchChats();
-    }, 10000);
+    }, 5000);
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
