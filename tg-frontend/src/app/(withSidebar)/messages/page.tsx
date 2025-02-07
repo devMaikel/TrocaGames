@@ -1,7 +1,7 @@
 "use client";
 
 import Modal from "@/app/components/Modal";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Chat, Message } from "./types";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -17,7 +17,19 @@ export default function MessagesPage() {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setTimeout(() => {
+        if (messagesContainerRef.current) {
+          messagesContainerRef.current.scrollTop =
+            messagesContainerRef.current.scrollHeight;
+        }
+      }, 100);
+    }
+  }, [isModalOpen, selectedChat?.messages]);
 
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("user_id") : "";
@@ -27,9 +39,9 @@ export default function MessagesPage() {
   const fetchChats = async () => {
     try {
       const response = await getChatsByUserToken();
-
       if (response.ok) {
         const data: Chat[] = await response.json();
+
         const sortedChats = data.sort((a, b) => {
           const lastMessageA =
             a.messages[a.messages.length - 1]?.createdAt ||
@@ -41,7 +53,12 @@ export default function MessagesPage() {
             new Date(lastMessageB).getTime() - new Date(lastMessageA).getTime()
           );
         });
-        setChats(sortedChats);
+
+        setChats((prevChats) => {
+          const hasChanged =
+            JSON.stringify(prevChats) !== JSON.stringify(sortedChats);
+          return hasChanged ? sortedChats : prevChats;
+        });
       } else if (response.status === 401) {
         localStorage.removeItem("access_token");
         router.push("/login");
@@ -51,11 +68,20 @@ export default function MessagesPage() {
       }
     } catch (err) {
       setError("Erro ao conectar com o servidor");
-      console.log(err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchChats();
+    }, 10000);
+
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const openChatModal = (chat: Chat) => {
     setSelectedChat(chat);
@@ -72,6 +98,7 @@ export default function MessagesPage() {
     }
 
     try {
+      setLoading(true);
       const response = await postNewChatMessage(selectedChat.id, newMessage);
 
       if (response.status === 201) {
@@ -82,7 +109,9 @@ export default function MessagesPage() {
         }));
         setNewMessage("");
         toast.success("Mensagem enviada com sucesso!");
-        router.push("/home");
+        fetchChats();
+        setIsModalOpen(false);
+        setSelectedChat(null);
       } else if (response.status === 401) {
         localStorage.removeItem("access_token");
         router.push("/login");
@@ -93,8 +122,16 @@ export default function MessagesPage() {
     } catch (err) {
       setError("Erro ao conectar com o servidor");
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
+  useEffect(() => {
+    const chatContainer = document.querySelector(".chat-messages-container");
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  }, [selectedChat?.messages]);
 
   useEffect(() => {
     fetchChats();
@@ -160,7 +197,10 @@ export default function MessagesPage() {
                 : selectedChat.buyer.name}
             </h2>
 
-            <div className="space-y-4 max-h-96 overflow-y-auto p-2">
+            <div
+              className="space-y-4 max-h-96 overflow-y-auto p-2"
+              ref={messagesContainerRef}
+            >
               {selectedChat.messages.map((message) => (
                 <div
                   key={message.createdAt}
