@@ -13,7 +13,7 @@ O projeto conta com um **backend em NestJS** e um **frontend em Next.js** (em de
 - ✅ **CRUD de Jogos** – Cadastro, listagem, atualização e exclusão de jogos.  
 - ✅ **Gerenciamento de Imagens** – Upload e remoção de imagens dos jogos via **Cloudinary**.  
 - ✅ **Busca de Jogos** – Pesquisa de jogos disponíveis para troca ou compra.  
-- ✅ **Sistema de Chats (WebSockets)** – Comunicação em tempo real entre os usuários. (ainda não implementado)  
+- ✅ **Sistema de Chats** – Comunicação em tempo real entre os usuários. 
 - ✅ **Banco de Dados** – Uso do **Prisma ORM** para gerenciamento do banco **PostgreSQL**.  
 
 ### 🎨 Frontend (Next.js) - Em Desenvolvimento  
